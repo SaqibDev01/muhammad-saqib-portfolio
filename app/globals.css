@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	html {
+		color-scheme: dark;
+		background: theme('colors.bg');
+		scroll-behavior: smooth;
+	}
+
+	body {
+		@apply bg-bg font-sans text-ink antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	::selection {
+		background: rgba(255, 106, 61, 0.35);
+	}
+
+	:focus-visible {
+		outline: 2px solid theme('colors.accent.DEFAULT');
+		outline-offset: 2px;
+		border-radius: 6px;
+	}
+}
+
+@layer components {
+	.page-container {
+		@apply mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-14;
+	}
+
+	.label {
+		@apply font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-faint;
+	}
+
+	.panel {
+		@apply rounded-xl border border-line bg-surface;
+	}
+
+	.chip {
+		@apply inline-flex items-center rounded-md border border-line bg-raised px-2 py-1 font-mono text-[11.5px] leading-none text-muted;
+	}
+
+	.btn {
+		@apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors duration-150;
+	}
+
+	.btn-primary {
+		@apply btn bg-accent text-accent-ink hover:bg-[#ff7d55];
+	}
+
+	.btn-ghost {
+		@apply btn border border-line bg-surface text-ink hover:border-[#3a3f4b] hover:bg-raised;
+	}
+}
+
+/* desktop: one screen, no page scroll. phones and short windows: normal flow */
+.app-shell {
+	display: flex;
+	min-height: 100dvh;
+	flex-direction: column;
+}
+
+.app-main {
+	flex: 1 1 auto;
+}
+
+/* room for the fixed mobile tab bar */
+.app-footer {
+	padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+	.app-footer {
+		padding-bottom: 0;
+	}
+}
+
+@media (min-width: 1024px) and (min-height: 560px) {
+	html,
+	body {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.app-shell {
+		height: 100dvh;
+		overflow: hidden;
+	}
+
+	.app-main {
+		min-height: 0;
+		overflow: hidden;
+	}
+}
+
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.rise {
+	animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.rise-2 {
+	animation-delay: 0.06s;
+}
+
+.rise-3 {
+	animation-delay: 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
