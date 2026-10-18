@@ -10,21 +10,25 @@ export const metadata = pageMetadata({
 });
 
 export default function AboutPage() {
+	let chip = 0;
+
 	return (
 		<PageFrame>
 			<div className="grid min-h-0 flex-1 grid-cols-1 content-center items-center gap-8 lg:grid-cols-12 lg:gap-14">
 				<section className="lg:col-span-6">
 					<PageHeader title="About" />
 
-					<div className="rise rise-2 mt-5 max-w-xl space-y-4 text-[16px] leading-[1.75] text-muted">
-						{about.paragraphs.map((paragraph) => (
-							<p key={paragraph}>{paragraph}</p>
+					<div className="mt-5 max-w-xl space-y-4 text-[16px] leading-[1.75] text-muted">
+						{about.paragraphs.map((paragraph, i) => (
+							<p key={paragraph} className="rise" style={{ ['--delay' as string]: `${0.2 + i * 0.14}s` }}>
+								{paragraph}
+							</p>
 						))}
 					</div>
 				</section>
 
 				<aside className="lg:col-span-6">
-					<section aria-labelledby="tech" className="rise rise-2 panel px-5 py-4 lg:px-6 short:py-3">
+					<section aria-labelledby="tech" className="panel px-5 py-4 lg:px-6 short:py-3">
 						<h2 id="tech" className="font-display text-lg font-bold tracking-tight">
 							Tech stack
 						</h2>
@@ -38,7 +42,11 @@ export default function AboutPage() {
 									<dd>
 										<ul className="flex flex-wrap gap-1.5">
 											{group.items.map((item) => (
-												<li key={item} className="chip">
+												<li
+													key={item}
+													className="chip pop"
+													style={{ ['--delay' as string]: `${0.35 + chip++ * 0.03}s` }}
+												>
 													{item}
 												</li>
 											))}

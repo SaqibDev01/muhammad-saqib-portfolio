@@ -8,8 +8,8 @@ type PageHeaderProps = {
 
 export function PageHeader({ title, children, className }: PageHeaderProps) {
 	return (
-		<header className={cn('rise', className)}>
-			<h1 className="font-display text-3xl font-bold tracking-tight lg:text-[40px] lg:leading-[1.1] short:lg:text-[34px]">
+		<header className={className}>
+			<h1 className="font-display text-3xl font-bold tracking-tight short:text-[38px] lg:text-[42px] lg:leading-[1.1] short:lg:text-[36px]">
 				{title}
 			</h1>
 			{children && (

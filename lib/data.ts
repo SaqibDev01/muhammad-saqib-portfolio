@@ -32,7 +32,7 @@ export const projects: Project[] = [
 		kind: 'Mobile app',
 		summary: 'Real-time vehicle tracking app, available on the Play Store.',
 		description:
-			'Live vehicle tracking on a Google map with animated markers and a switch to turn live updates on or off. Built for smooth map performance and clear data presentation.',
+			'Live vehicle tracking on a Google map with animated markers and a switch to turn live updates on or off.',
 		stack: ['React Native', 'Google Maps API', 'Firebase'],
 		image: '/projects/livetrack.webp',
 		featured: true,
@@ -87,7 +87,7 @@ export const projects: Project[] = [
 		kind: 'Mobile app',
 		summary: 'Crypto trading app with a custom-designed interface.',
 		description:
-			'A cryptocurrency trading app with smooth animations and a custom UI built from scratch, without a Figma handoff.',
+			'A cryptocurrency trading app with animated screens and a custom UI built from scratch, without a Figma handoff.',
 		stack: ['React Native', 'Animations', 'Custom UI'],
 		image: '/projects/nexacoin.webp',
 		featured: true,
@@ -231,9 +231,9 @@ export const projects: Project[] = [
 		slug: 'payfox',
 		name: 'Payfox',
 		kind: 'Mobile app',
-		summary: 'Payment app with a streamlined interface.',
+		summary: 'Payment gateway app with a clean interface.',
 		description:
-			'A payment gateway app with secure transactions and a clean, streamlined interface.',
+			'A payment gateway app for secure transactions.',
 		stack: ['React Native', 'UI design'],
 		image: '/projects/payfox.webp',
 		featured: false,

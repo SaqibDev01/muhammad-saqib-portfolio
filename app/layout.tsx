@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
+import { Bricolage_Grotesque, DM_Sans, JetBrains_Mono } from 'next/font/google';
 
+import { Aurora } from '@/components/aurora';
 import { JsonLd } from '@/components/json-ld';
 import { MobileTabs } from '@/components/mobile-tabs';
 import { SiteFooter } from '@/components/site-footer';
@@ -9,10 +10,9 @@ import { SiteHeader } from '@/components/site-header';
 import { siteSchema } from '@/lib/schema';
 import { SITE_URL, profile, seo } from '@/lib/site';
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const display = Plus_Jakarta_Sans({
+const sans = DM_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const display = Bricolage_Grotesque({
 	subsets: ['latin'],
-	weight: ['700', '800'],
 	variable: '--font-display',
 	display: 'swap',
 });
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-	themeColor: '#0b0c0f',
+	themeColor: '#040a09',
 	colorScheme: 'dark',
 	width: 'device-width',
 	initialScale: 1,
@@ -74,6 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				>
 					Skip to content
 				</a>
+				<Aurora />
 				<div className="app-shell">
 					<SiteHeader />
 					<main id="main" className="app-main">

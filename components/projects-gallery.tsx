@@ -17,11 +17,15 @@ type ProjectsGalleryProps = {
 
 export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 	const [index, setIndex] = useState(0);
+	const [dir, setDir] = useState<1 | -1>(1);
 	const stripRef = useRef<HTMLUListElement>(null);
 	const total = projects.length;
 	const project = projects[index];
 
-	const go = (next: number) => setIndex((next + total) % total);
+	function go(next: number, direction: 1 | -1) {
+		setDir(direction);
+		setIndex((next + total) % total);
+	}
 
 	// keep the active thumbnail centred in the strip
 	useEffect(() => {
@@ -38,10 +42,10 @@ export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 	function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
 		if (event.key === 'ArrowRight') {
 			event.preventDefault();
-			go(index + 1);
+			go(index + 1, 1);
 		} else if (event.key === 'ArrowLeft') {
 			event.preventDefault();
-			go(index - 1);
+			go(index - 1, -1);
 		}
 	}
 
@@ -51,20 +55,20 @@ export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 				{header}
 				<div className="flex shrink-0 items-center gap-2">
 					<span className="font-mono text-xs text-faint" aria-live="polite">
-						{pad(index + 1)} / {pad(total)}
+						<span className="text-accent-2">{pad(index + 1)}</span> / {pad(total)}
 					</span>
 					{(
 						[
-							['Previous project', ChevronLeft, index - 1],
-							['Next project', ChevronRight, index + 1],
+							['Previous project', ChevronLeft, index - 1, -1],
+							['Next project', ChevronRight, index + 1, 1],
 						] as const
-					).map(([label, Icon, target]) => (
+					).map(([label, Icon, target, direction]) => (
 						<button
 							key={label}
 							type="button"
 							aria-label={label}
-							onClick={() => go(target)}
-							className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-surface text-muted transition-colors hover:bg-raised hover:text-ink"
+							onClick={() => go(target, direction)}
+							className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-surface text-muted transition duration-200 hover:border-accent/60 hover:bg-raised hover:text-ink active:scale-95"
 						>
 							<Icon className="h-4 w-4" aria-hidden="true" />
 						</button>
@@ -74,21 +78,21 @@ export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 
 			<article
 				key={project.slug}
-				className="rise grid min-h-0 flex-1 grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-8"
+				className="grid min-h-0 flex-1 grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-8"
 			>
-				<div className="relative min-h-[220px] overflow-hidden rounded-xl border border-line bg-raised lg:col-span-7">
+				<div className="relative min-h-[220px] overflow-hidden rounded-lg border border-line bg-raised lg:col-span-7">
 					<Image
 						src={project.image}
 						alt={`${project.name} ${project.kind.toLowerCase()} screenshots`}
 						fill
 						priority={index === 0}
 						sizes="(min-width: 1024px) 58vw, 94vw"
-						className="object-contain"
+						className="settle object-contain"
 					/>
 				</div>
 
-				<div className="flex min-h-0 flex-col justify-center lg:col-span-5">
-					<p className="label">{project.kind}</p>
+				<div className={cn(dir > 0 ? 'from-right' : 'from-left', 'flex min-h-0 flex-col justify-center lg:col-span-5')}>
+					<p className="label text-accent-2">{project.kind}</p>
 					<h2 className="mt-2 font-display text-3xl font-bold tracking-tight lg:text-[34px] lg:leading-[1.1]">
 						{project.name}
 					</h2>
@@ -113,7 +117,7 @@ export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 			<ul
 				ref={stripRef}
 				aria-label="All projects"
-				className="relative flex shrink-0 gap-2 overflow-x-auto pb-1.5 [scrollbar-width:thin]"
+				className="relative flex shrink-0 gap-2 overflow-x-auto pb-1.5 pt-1 [scrollbar-width:thin]"
 			>
 				{projects.map((item, i) => {
 					const active = i === index;
@@ -123,9 +127,9 @@ export function ProjectsGallery({ projects, header }: ProjectsGalleryProps) {
 								type="button"
 								data-index={i}
 								aria-current={active}
-								onClick={() => setIndex(i)}
+								onClick={() => go(i, i > index ? 1 : -1)}
 								className={cn(
-									'relative block h-[68px] w-[120px] overflow-hidden rounded-lg border bg-raised transition-opacity',
+									'relative block h-[68px] w-[120px] overflow-hidden rounded-md border bg-raised transition duration-200',
 									active ? 'border-accent' : 'border-line opacity-60 hover:opacity-100',
 								)}
 							>

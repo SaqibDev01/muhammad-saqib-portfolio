@@ -2,24 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--bg: 4 10 9;
+	--ink: 240 250 246;
+	--muted: 163 190 181;
+	--faint: 122 150 141;
+	--accent: 29 191 115;
+	--accent-2: 94 234 212;
+	--accent-ink: 2 22 14;
+}
+
 @layer base {
 	html {
 		color-scheme: dark;
-		background: theme('colors.bg');
+		background: rgb(var(--bg));
 		scroll-behavior: smooth;
 	}
 
 	body {
-		@apply bg-bg font-sans text-ink antialiased;
+		@apply font-sans text-ink antialiased;
 		text-rendering: optimizeLegibility;
 	}
 
 	::selection {
-		background: rgba(255, 106, 61, 0.35);
+		background: rgb(var(--accent) / 0.4);
 	}
 
 	:focus-visible {
-		outline: 2px solid theme('colors.accent.DEFAULT');
+		outline: 2px solid rgb(var(--accent));
 		outline-offset: 2px;
 		border-radius: 6px;
 	}
@@ -35,23 +45,23 @@
 	}
 
 	.panel {
-		@apply rounded-xl border border-line bg-surface;
+		@apply rounded-xl border border-line bg-surface backdrop-blur-sm;
 	}
 
 	.chip {
-		@apply inline-flex items-center rounded-md border border-line bg-raised px-2 py-1 font-mono text-[11.5px] leading-none text-muted;
+		@apply inline-flex items-center rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-[11.5px] leading-none text-muted transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-ink short:py-[3px];
 	}
 
 	.btn {
-		@apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors duration-150;
+		@apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition duration-200 active:scale-95;
 	}
 
 	.btn-primary {
-		@apply btn bg-accent text-accent-ink hover:bg-[#ff7d55];
+		@apply btn bg-accent text-accent-ink hover:-translate-y-0.5 hover:bg-accent-2;
 	}
 
 	.btn-ghost {
-		@apply btn border border-line bg-surface text-ink hover:border-[#3a3f4b] hover:bg-raised;
+		@apply btn border border-line bg-surface text-ink hover:-translate-y-0.5 hover:border-accent/50 hover:bg-raised;
 	}
 }
 
@@ -95,10 +105,65 @@
 	}
 }
 
+/* ---------- background: two soft glows that drift slowly, plus grain ---------- */
+
+.aurora {
+	position: fixed;
+	inset: 0;
+	z-index: -10;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.aurora-glow-a,
+.aurora-glow-b {
+	position: absolute;
+	will-change: transform;
+}
+
+.aurora-glow-a {
+	width: 70vmax;
+	height: 70vmax;
+	left: -24vmax;
+	top: -34vmax;
+	background: radial-gradient(closest-side, rgb(var(--accent) / 0.16), transparent 70%);
+	animation: drift-a 32s ease-in-out infinite alternate;
+}
+
+.aurora-glow-b {
+	width: 56vmax;
+	height: 56vmax;
+	right: -22vmax;
+	bottom: -30vmax;
+	background: radial-gradient(closest-side, rgb(var(--accent-2) / 0.1), transparent 70%);
+	animation: drift-b 40s ease-in-out infinite alternate;
+}
+
+.aurora-grain {
+	position: absolute;
+	inset: 0;
+	opacity: 0.05;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes drift-a {
+	to {
+		transform: translate3d(9vmax, 7vmax, 0) scale(1.1);
+	}
+}
+
+@keyframes drift-b {
+	to {
+		transform: translate3d(-8vmax, -8vmax, 0) scale(0.92);
+	}
+}
+
+/* ---------- entrances ---------- */
+
 @keyframes rise {
 	from {
 		opacity: 0;
-		transform: translateY(8px);
+		transform: translateY(14px);
 	}
 	to {
 		opacity: 1;
@@ -107,15 +172,300 @@
 }
 
 .rise {
-	animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	animation: rise 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	animation-delay: var(--delay, 0s);
 }
 
-.rise-2 {
-	animation-delay: 0.06s;
+/* springy scale-in with a small overshoot (buttons, chips, icons) */
+@keyframes pop {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.82);
+	}
+	60% {
+		opacity: 1;
+		transform: translateY(0) scale(1.05);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
 }
 
-.rise-3 {
-	animation-delay: 0.12s;
+.pop {
+	animation: pop 0.6s cubic-bezier(0.3, 1.2, 0.4, 1) backwards;
+	animation-delay: var(--delay, 0s);
+}
+
+@keyframes slide-in-x {
+	from {
+		opacity: 0;
+		transform: translateX(26px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.slide-row {
+	animation: slide-in-x 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+	animation-delay: var(--delay, 0s);
+}
+
+@keyframes slide-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(40px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes slide-in-left {
+	from {
+		opacity: 0;
+		transform: translateX(-40px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.from-right {
+	animation: slide-in-right 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.from-left {
+	animation: slide-in-left 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* project image settles in */
+@keyframes settle {
+	from {
+		opacity: 0;
+		transform: scale(1.06);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.settle {
+	animation: settle 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes page-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.page-in {
+	animation: page-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* thin progress line across the top when a page opens */
+@keyframes route-line {
+	0% {
+		transform: scaleX(0);
+		opacity: 1;
+	}
+	70% {
+		transform: scaleX(1);
+		opacity: 1;
+	}
+	100% {
+		transform: scaleX(1);
+		opacity: 0;
+	}
+}
+
+.route-line {
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 60;
+	height: 2px;
+	width: 100%;
+	transform-origin: 0 50%;
+	pointer-events: none;
+	background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
+	animation: route-line 0.85s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+
+@keyframes slide-up {
+	from {
+		transform: translateY(110%);
+	}
+	to {
+		transform: none;
+	}
+}
+
+.mask-line {
+	display: inline-block;
+	overflow: hidden;
+	vertical-align: top;
+	padding-bottom: 0.16em;
+	margin-bottom: -0.16em;
+}
+
+.mask-line > span {
+	display: inline-block;
+	animation: slide-up 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	animation-delay: var(--delay, 0s);
+}
+
+/* ---------- portrait stage: the signature animation ---------- */
+
+/* layers move a little with the cursor, each by its own depth */
+.px-layer {
+	translate: calc(var(--px, 0) * var(--depth, 10) * 1px) calc(var(--py, 0) * var(--depth, 10) * 1px);
+	transition: translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes stage-in {
+	from {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.stage-in {
+	animation: stage-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	animation-delay: var(--delay, 0s);
+}
+
+.portrait-disc {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	background: radial-gradient(circle at 50% 34%, rgb(var(--accent) / 0.36), rgb(var(--accent-2) / 0.1) 55%, rgb(var(--accent) / 0.03) 100%);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: inset 0 0 60px rgb(var(--accent) / 0.12);
+}
+
+/* soft glow behind the disc that slowly breathes */
+.portrait-disc::before {
+	content: '';
+	position: absolute;
+	inset: -14%;
+	z-index: -1;
+	border-radius: 9999px;
+	background: radial-gradient(closest-side, rgb(var(--accent) / 0.32), transparent 72%);
+	animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+	0%,
+	100% {
+		opacity: 0.5;
+		transform: scale(0.96);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.06);
+	}
+}
+
+/* light arc that travels around the edge */
+.portrait-arc {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	padding: 2px;
+	background: conic-gradient(from 0deg, transparent 0 55%, rgb(var(--accent) / 0.95) 75%, rgb(var(--accent-2) / 0.95) 90%, transparent);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+	animation: spin 7s linear infinite;
+}
+
+/* rings that spread out from the disc, like a live signal */
+.ripple {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	border: 1px solid rgb(var(--accent) / 0.45);
+	animation: ripple 5s ease-out infinite;
+	animation-delay: var(--delay, 0s);
+	opacity: 0;
+}
+
+@keyframes ripple {
+	0% {
+		opacity: 0.55;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1.32);
+	}
+}
+
+.ring-outer {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* two small lights travelling on the outer ring, at different speeds and directions */
+.orbit-spin {
+	position: absolute;
+	inset: 0;
+	animation: spin 34s linear infinite;
+}
+
+.orbit-spin.reverse {
+	animation: spin-rev 52s linear infinite;
+	animation-delay: -18s;
+}
+
+.orbit-dot {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: 8px;
+	height: 8px;
+	margin: -4px 0 0 -4px;
+	border-radius: 9999px;
+	background: rgb(var(--accent-2));
+	box-shadow: 0 0 14px 3px rgb(var(--accent-2) / 0.65);
+}
+
+.orbit-spin.reverse .orbit-dot {
+	width: 5px;
+	height: 5px;
+	margin: -2.5px 0 0 -2.5px;
+	background: rgb(var(--accent));
+	box-shadow: 0 0 10px 2px rgb(var(--accent) / 0.7);
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spin-rev {
+	to {
+		transform: rotate(-360deg);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
