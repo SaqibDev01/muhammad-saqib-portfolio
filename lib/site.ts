@@ -44,7 +44,7 @@ export const profileLinks: ProfileLink[] = [
 		id: 'upwork',
 		label: 'Upwork',
 		handle: 'muhammadsaqib01',
-		href: 'https://www.upwork.com/freelancers/muhammadsaqib01',
+		href: 'https://www.upwork.com/freelancers/~019a897639487e78b8',
 		icon: 'upwork',
 		primary: true,
 		blurb: 'Hire me for a project',
